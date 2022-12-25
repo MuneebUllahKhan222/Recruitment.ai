@@ -1,0 +1,43 @@
+@import url('https://fonts.googleapis.com/css2?family=Kanit&display=swap');
+.login-button {
+  color: rgb(174,255,107);
+  background-color: #2E3032;
+  font-weight: 500;
+  font-size: 15px;
+  font-family: 'Kanit', sans-serif;
+}
+.login-button:hover {
+  color: #2E3032;
+  background-image: linear-gradient(60deg, #AEFF6B, #77FFE4);
+  cursor: pointer;
+  
+}
+
+.start-interview{
+  /* background-color: rgb(174,255,107); */
+  background-image: linear-gradient(60deg, #AEFF6B, #77FFE4);
+  background-clip: text;
+  color: #2E3032;
+  font-weight: 550;
+  font-size: 15px;
+  font-family: 'Kanit', sans-serif;
+}
+.start-interview:hover{
+  cursor: pointer;
+  background-image: linear-gradient(120deg, #2E3032, #2E3032);
+  color:rgb(174,255,107);
+  
+}
+
+.meeting-image{
+position: fixed;
+top: 75%;
+left: 17%;
+bottom: 25%;
+right: 83%;
+
+}
+
+.questions{
+  
+}
