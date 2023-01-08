@@ -26,13 +26,14 @@ def question():
 def answer(answers: Answers):
     global dictionary
     dictionary = {answers.quest_ID: answers.ans}
-    return dictionary
-
-# API 3rd End-point    
-@app.get("/scores")
-def question():
     question_result = processing()
     return JSONResponse(content=question_result)
+
+# # API 3rd End-point    
+# @app.get("/scores")
+# def question():
+#     question_result = processing()
+#     return JSONResponse(content=question_result)
 
 # Calculating metrics using expert system
 def processing():
@@ -44,3 +45,4 @@ def processing():
 # Main program
 if __name__=="__main__":
     uvicorn.run(app, port = 8000)
+
