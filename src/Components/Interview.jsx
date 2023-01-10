@@ -1,13 +1,20 @@
 import { Box, Divider, IconButton, Step, StepLabel, Stepper, TextField, Typography } from '@mui/material'
+import axios from 'axios'
 import React from 'react'
 import { useState } from 'react';
 import Volume from '../assets/Asset 6.png'
 import CachedIcon from '@mui/icons-material/Cached';
 import { useNavigate } from 'react-router-dom';
+import { useSpeechSynthesis } from "react-speech-kit"
+import { useEffect } from 'react';
 function Interview() {
 
     const [questionNo, setQuestionNo] = useState(0)
     const navigate = useNavigate();
+    const { speak } = useSpeechSynthesis();
+    const [questions, setQuestions] = useState(null)
+    const [answer, setAnswer] = useState('')
+    const [score, setScore] = useState([])
 
     const steps = [
         'Question 1',
@@ -16,20 +23,71 @@ function Interview() {
         'Question 4',
         'Question 5',
       ];
+      console.log(score, 'score')
+
 
 
     const submit = () => {
+      const dataRecieved = {
+        // quest_ID:`question${questionNo}`,
+        quest_ID: `question${questionNo+1}`,
+        ans:answer
+      }
+      const  data = JSON.stringify(dataRecieved)
+      console.log(data)
         if (questionNo !== 4){
-
+          const submitAnswer = axios.post('http://127.0.0.1:8000/answer', dataRecieved).then(res => {
+            // console.log(res?.data[0])
+            setScore([...score, res?.data[0].toFixed(2)])
+          })
+          
+            questionSpeech(questions[`question${questionNo +2}`])
             setQuestionNo(prev => prev +1 )
+            setAnswer('')
+
         } else {
+          const submitAnswer = axios.post('http://127.0.0.1:8000/answer', dataRecieved).then(res => {
+            // console.log(res?.data[0])
+            setScore([...score, res?.data[0].toFixed(2)])
+          })
             setQuestionNo(0)
-            navigate('/result')
+            setAnswer('')
+            navigate('/result', {state:{score}})
         }
 
     }
 
+    // const getQuestions =axios.get("http://127.0.0.1:8000/question").then(res => {
+    //   // setQuestions(res?.data)
+    // })
+    
+    const questionSpeech = (question) => {
+      console.log(question)
+      // setTimeout(() => {
+        speak({text : question})
+      // },100)
+      
+    }
 
+
+    useEffect(() => {
+
+      const getQuestions =  axios.get("http://127.0.0.1:8000/question").then(res => {
+        console.log(res?.data.question1)
+        questionSpeech(res?.data.question1)
+      setQuestions(res?.data) 
+    },[])
+    
+    }, [])
+    console.log(questions)
+    // useEffect(() => {
+    //   questionSpeech(questions['question1'])
+    // },[questions])
+
+
+
+    
+    
   return (
     <>
     <Box pl={6} pr={6} pt={6} sx={{display:'flex', justifyContent:'space-between', alignItems:'center'}}>
@@ -54,6 +112,8 @@ function Interview() {
           color='success'
           inputProps={{borderRadius:'40px'}}
           sx={{backgroundColor:'white', width:'50%'}}
+          onChange = {(e) => setAnswer(e.target.value)}
+          value={answer}
         />
         {/* </Box > */}
         <Box onClick={submit} mt={3} className='start-interview' sx={{borderRadius:'15px', border:'1px solid white', width:'100px', height:'35px',display:'flex', justifyContent:'center', alignItems:'center'}}>
@@ -88,7 +148,7 @@ function Interview() {
         ))}
       </Stepper>
     </Box>
-    <IconButton sx={{backgroundImage:'linear-gradient(60deg, #AEFF6B, #77FFE4)', position:'sticky', left:'71%', bottom:'42%', right:'26%', top:'53%'}}>
+    <IconButton onClick={() => questionSpeech(questions[`question${questionNo +1}`])} sx={{backgroundImage:'linear-gradient(60deg, #AEFF6B, #77FFE4)', position:'sticky', left:'71%', bottom:'42%', right:'26%', top:'53%'}}>
         <CachedIcon />
     </IconButton>
 
